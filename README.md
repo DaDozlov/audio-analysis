@@ -34,3 +34,9 @@ curl -fsSL https://ollama.com/install.sh | sh
 ```bash
 sudo apt-get update && sudo apt-get install ffmpeg
 ```
+
+## Quick‑start
+```bash
+ollama pull llama3.2
+uvicorn app.main:app --reload
+```
