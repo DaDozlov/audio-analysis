@@ -1,5 +1,4 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
-import shutil
 import os
 from .config import settings
 from .audio_processing import preprocess_audio
@@ -20,7 +19,7 @@ async def transcribe_endpoint(
         file_bytes = await file.read()
         audio_path = preprocess_audio(file_bytes, filename_ext=file.filename.split(".")[-1])
         transcript_text = transcribe(audio_path)
-        analysis_text = analyse_transcript(transcript_text, industry)
+        analysis_text = await analyse_transcript(transcript_text, industry)
         return {"transcription": transcript_text, "analysis": analysis_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

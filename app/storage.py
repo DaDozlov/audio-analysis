@@ -3,6 +3,7 @@ from datetime import datetime
 from .config import settings
 
 def save_output(content: str, user_filename: str, organisation_id: str) -> Path:
+    """Save the output file in the choosen directory."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_name = f"{timestamp}_{user_filename}.txt"
     dir_ = settings.data_dir / organisation_id / "data" / "public"

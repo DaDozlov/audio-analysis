@@ -3,7 +3,6 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
-
 # config classes
 class Settings(BaseSettings):
     
@@ -20,6 +19,7 @@ class Settings(BaseSettings):
     # ollama
     ollama_model: str = "llama3.2"
     ollama_base_url: str | None = None
+    ollama_host: str | None = None
 
     class Config:
         env_file = "../.env"

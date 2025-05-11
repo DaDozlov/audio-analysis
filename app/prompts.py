@@ -1,40 +1,36 @@
 from datetime import datetime
+from typing import Optional
 
-BASE_PROMPT = """
-You are an AI assistant designed to extract structured information from conversation transcripts.
-Detect the transcript language and answer **in the same language**.
-Return only categories that contain information.
+from .variables import BASE_PROMPT_DE, CONTEXT_SNIPPETS
 
-Categories:
-- Tasks (Action items, assignees, deadlines)
-- Decisions (Finalised choices or agreements)
-- Questions (Explicitly asked queries)
-- Insights (Notable take‑aways)
-- Deadlines (Specific dates/timelines)
-- Attendees (Names or roles)
-- Follow‑ups (Pending tasks / next steps)
-- Risks (Potential challenges, concerns)
-- Agenda (Planned discussion points)
+def build_prompt(
+    transcript: str,
+    context: Optional[str] = None,
+) -> str:
+    """
+    Build a prompt for transcript analysis, optionally injecting context‑specific hints.
 
-Output format (replace the German labels when responding in another language):
-**Aufgaben**
-[Beschreibung] (Responsible: [Person/Team], Deadline: [DD.MM.YYYY])
+    Parameters
+    ----------
+    transcript : str
+        The conversation transcript to analyse.
+    context : str | None
+        Industry or meeting context (e.g. "bank", "autowerkstatt", "hr").
 
-**Entscheidungen**
-[Entscheidung]
+    Returns
+    -------
+    str
+        A fully composed prompt ready to be sent to the LLM.
+    """
+    # base prompts
+    prompt_parts: list[str] = [BASE_PROMPT_DE.strip()]
 
-… (etc.)
-""".strip()
+    # if a recognised context is provided, append its guidance
+    if context and context.lower() in CONTEXT_SNIPPETS:
+        prompt_parts.append(CONTEXT_SNIPPETS[context.lower()].strip())
 
-INDUSTRY_SNIPPETS = {
-    "bank": "You are analysing a meeting in the banking sector. Pay special attention to regulatory compliance, risk management, data privacy and customer‑related deadlines.",
-    "autowerkstatt": "You are analysing a workshop meeting in an automotive repair context. Highlight parts orders, vehicle delivery dates, safety issues and warranty considerations.",
-    "hr": "You are analysing an internal HR one‑on‑one. Focus on performance goals, feedback items and confidential data handling.",
-}
+     # add timestamp and the raw transcript
+    timestamp = datetime.utcnow().isoformat(timespec="seconds")
+    prompt_parts.append(f"Transkript (erstellt am {timestamp} UTC):\n{transcript}")
 
-def build_prompt(transcript: str, industry: str | None = None) -> str:
-    parts = [BASE_PROMPT]
-    if industry and industry.lower() in INDUSTRY_SNIPPETS:
-        parts.append(INDUSTRY_SNIPPETS[industry.lower()])
-    parts.append(f"Transcript (created on {datetime.utcnow().isoformat()} UTC):\n{transcript}")
-    return "\n\n".join(parts)
+    return "\n\n".join(prompt_parts)
