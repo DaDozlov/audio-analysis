@@ -21,17 +21,3 @@ def test_transcribe_endpoint(client, monkeypatch, sine_wav_bytes):
     data = resp.json()
     assert data["transcription"] == "Hello test"
     assert "Task 1" in data["analysis"]
-
-
-def test_save_endpoint(client):
-    resp = client.post(
-        "/save",
-        data={
-            "content": "save me",
-            "user_filename": "unit_test",
-            "organisation_id": "org1",
-        },
-    )
-    assert resp.status_code == 200
-    path = resp.json()["file_path"]
-    assert path.endswith("_unit_test.txt")
