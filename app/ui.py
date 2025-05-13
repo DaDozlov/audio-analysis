@@ -6,60 +6,82 @@ API_URL = "http://localhost:8000"
 
 st.title("Audio Transcription and Analysis")
 
-uploaded_file = st.file_uploader("Upload MP3 file", type=["mp3"])
+with st.form("transcribe_form"):
+    uploaded_file = st.file_uploader("Upload MP3/WAV file", type=["mp3", "wav"])
+    industry = st.text_input("Industry (optional)")
+    user_id = st.text_input("User ID")
+    organisation_id = st.text_input("Organisation ID")
+    file_name_input = st.text_input("File name (without extension)")
+    submitted = st.form_submit_button("Transcribe and Analyze")
 
-# input fields for required form data
-industry = st.text_input("Industry (optional)")
-user_id = st.text_input("User ID")
-organisation_id = st.text_input("Organisation ID")
-file_name = st.text_input("Desired file name (without extension)")
-
-if st.button("Transcribe and Analyze"):
-    if uploaded_file is None:
+if submitted:
+    if not uploaded_file:
         st.error("Please upload an MP3 file.")
-    elif not user_id or not organisation_id or not file_name:
+    elif not user_id or not organisation_id or not file_name_input:
         st.error("Please fill in User ID, Organisation ID, and File Name.")
     else:
         with st.spinner("Transcribing..."):
-            files = {
-                "file": (uploaded_file.name, uploaded_file.getvalue(), "audio/mpeg")
-            }
-            data = {
-                "industry": industry,
-                "user_id": user_id,
-                "organisation_id": organisation_id,
-                "file_name": file_name
-            }
             try:
-                response = requests.post(f"{API_URL}/transcribe", files=files, data=data)
-                response.raise_for_status()
-                result = response.json()
+                files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "audio/mpeg")}
+                data = {
+                    "industry": industry,
+                    "user_id": user_id,
+                    "organisation_id": organisation_id,
+                    "file_name": file_name_input
+                }
+                resp = requests.post(f"{API_URL}/transcribe", files=files, data=data)
+                resp.raise_for_status()
+                result = resp.json()
+
+                st.session_state.transcription = result.get("transcription", "")
+                st.session_state.analysis = result.get("analysis", "")
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                txt_filename = f"{timestamp}_{file_name_input}.txt"
+                content_sections = [
+                    "[Transcription]\n", st.session_state.transcription, "\n\n",
+                    "[Analysis]\n", st.session_state.analysis
+                ]
+                st.session_state.txt_content = "".join(content_sections)
+                st.session_state.txt_filename = txt_filename
+                st.session_state.ready = True
             except Exception as e:
                 st.error(f"Error calling API: {e}")
-                st.stop()
 
-        # display results
-        transcription = result.get("transcription", "")
-        analysis = result.get("analysis", "")
-        st.subheader("Transcription")
-        st.text_area("", transcription, height=200)
-        st.subheader("Analysis")
-        st.text_area("", analysis, height=200)
+# show download and save options
+if st.session_state.get("ready"):
+    st.subheader("Transcription")
+    st.text_area("", st.session_state.transcription, height=200)
+    st.subheader("Analysis")
+    st.text_area("", st.session_state.analysis, height=200)
 
-        # prepare structured TXT content
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        txt_filename = f"{timestamp}_{file_name}.txt"
-        content_sections = [
-            "[Tasks]\n",
-            transcription + "\n\n",
-            "[Decisions]\n",
-            analysis + "\n",
-        ]
-        txt_content = "".join(content_sections)
+    # download button
+    st.download_button(
+        label="Download Results as TXT",
+        data=st.session_state.txt_content,
+        file_name=st.session_state.txt_filename,
+        mime="text/plain",
+        key="download_btn"
+    )
 
-        st.download_button(
-            label="Download Results as TXT",
-            data=txt_content,
-            file_name=txt_filename,
-            mime="text/plain"
-        )
+    # save to server button
+    if st.button("Save Results to Server", key="save_btn"):
+        with st.spinner("Saving to server..."):
+            try:
+                save_data = {
+                    "content": st.session_state.txt_content,
+                    "user_id": user_id,
+                    "organisation_id": organisation_id,
+                    "file_name": st.session_state.txt_filename
+                }
+                save_resp = requests.post(f"{API_URL}/save_transcription", data=save_data)
+                save_resp.raise_for_status()
+                save_result = save_resp.json()
+                file_path = save_result.get("file_path", "")
+                st.success(f"Successfully saved on server: {file_path}")
+
+                try:
+                    download_url = f"{API_URL}/transcripts/{file_path}"
+                except Exception:
+                    pass
+            except Exception as e:
+                st.error(f"Error calling /save_transcription API: {e}")

@@ -37,6 +37,14 @@ sudo apt-get update && sudo apt-get install ffmpeg
 
 ## Quick‑start
 ```bash
-ollama pull llama3.2
+ollama pull llama3.2:1b
 uvicorn app.main:app --reload
+streamlit run app/ui.py --server.port 8501 --server.address 0.0.0.0
+```
+
+## Quick‑start frontend and backend at the same time
+```bash
+ollama pull llama3.2:1b
+chmod +x start.sh
+./start.sh
 ```
