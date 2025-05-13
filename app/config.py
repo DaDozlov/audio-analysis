@@ -5,9 +5,10 @@ BASE_DIR = Path(__file__).resolve().parent
 
 API_URL = "http://localhost:8000"
 
+
 # config classes
 class Settings(BaseSettings):
-    
+
     # general
     app_name: str = "Audio‑Transcribe"
 
@@ -26,5 +27,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = "../.env"
         env_file_encoding = "utf-8"
+
 
 settings = Settings()

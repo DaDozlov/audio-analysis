@@ -22,12 +22,14 @@ if submitted:
     else:
         with st.spinner("Transcribing..."):
             try:
-                files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "audio/mpeg")}
+                files = {
+                    "file": (uploaded_file.name, uploaded_file.getvalue(), "audio/mpeg")
+                }
                 data = {
                     "industry": industry,
                     "user_id": user_id,
                     "organisation_id": organisation_id,
-                    "file_name": file_name_input
+                    "file_name": file_name_input,
                 }
                 resp = requests.post(f"{API_URL}/transcribe", files=files, data=data)
                 resp.raise_for_status()
@@ -38,8 +40,11 @@ if submitted:
                 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 txt_filename = f"{timestamp}_{file_name_input}.txt"
                 content_sections = [
-                    "[Transcription]\n", st.session_state.transcription, "\n\n",
-                    "[Analysis]\n", st.session_state.analysis
+                    "[Transcription]\n",
+                    st.session_state.transcription,
+                    "\n\n",
+                    "[Analysis]\n",
+                    st.session_state.analysis,
                 ]
                 st.session_state.txt_content = "".join(content_sections)
                 st.session_state.txt_filename = txt_filename
@@ -60,7 +65,7 @@ if st.session_state.get("ready"):
         data=st.session_state.txt_content,
         file_name=st.session_state.txt_filename,
         mime="text/plain",
-        key="download_btn"
+        key="download_btn",
     )
 
     # save to server button
@@ -71,9 +76,11 @@ if st.session_state.get("ready"):
                     "content": st.session_state.txt_content,
                     "user_id": user_id,
                     "organisation_id": organisation_id,
-                    "file_name": st.session_state.txt_filename
+                    "file_name": st.session_state.txt_filename,
                 }
-                save_resp = requests.post(f"{API_URL}/save_transcription", data=save_data)
+                save_resp = requests.post(
+                    f"{API_URL}/save_transcription", data=save_data
+                )
                 save_resp.raise_for_status()
                 save_result = save_resp.json()
                 file_path = save_result.get("file_path", "")

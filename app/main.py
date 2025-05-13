@@ -27,6 +27,7 @@ app.mount(
     name="transcripts",
 )
 
+
 @app.post("/transcribe")
 async def transcribe_endpoint(
     file: UploadFile = File(...),
@@ -37,10 +38,12 @@ async def transcribe_endpoint(
 ):
     try:
         file_bytes = await file.read()
-        audio_path = preprocess_audio(file_bytes, filename_ext=file.filename.split(".")[-1])
+        audio_path = preprocess_audio(
+            file_bytes, filename_ext=file.filename.split(".")[-1]
+        )
         transcript_text = transcribe(audio_path)
         analysis_text = await analyse_transcript(transcript_text, industry)
-        
+
         return {"transcription": transcript_text, "analysis": analysis_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -49,6 +52,7 @@ async def transcribe_endpoint(
             os.remove(audio_path)
         except Exception:
             pass
+
 
 @app.post("/save_transcription")
 async def save_transcription(

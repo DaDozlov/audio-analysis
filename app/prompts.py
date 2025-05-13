@@ -3,6 +3,7 @@ from typing import Optional
 
 from .variables import BASE_PROMPT_DE, CONTEXT_SNIPPETS
 
+
 def build_prompt(
     transcript: str,
     context: Optional[str] = None,
@@ -29,7 +30,7 @@ def build_prompt(
     if context and context.lower() in CONTEXT_SNIPPETS:
         prompt_parts.append(CONTEXT_SNIPPETS[context.lower()].strip())
 
-     # add timestamp and the raw transcript
+    # add timestamp and the raw transcript
     timestamp = datetime.utcnow().isoformat(timespec="seconds")
     prompt_parts.append(f"Transkript (erstellt am {timestamp} UTC):\n{transcript}")
 

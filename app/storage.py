@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import datetime
 from .config import settings
 
+
 def save_transcription_file(
     content: str,
     organisation_id: str,
@@ -12,13 +13,7 @@ def save_transcription_file(
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_name = f"transcription_{timestamp}_{file_name}.txt"
 
-    out_dir = (
-        settings.data_dir
-        / organisation_id
-        / user_id
-        / "data"
-        / "public"
-    )
+    out_dir = settings.data_dir / organisation_id / user_id / "data" / "public"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     out_path = out_dir / safe_name
