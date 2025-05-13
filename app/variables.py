@@ -24,32 +24,27 @@ Du bist ein KI‑Assistent für die strukturierte Auswertung von Meeting‑Trans
 
 CONTEXT_SNIPPETS = {
     "bank": """
-*Branchenspezifischer Hinweis (Bankwesen)*  
-Achte auf regulatorische Anforderungen (BaFin/ECB), Risikomanagement, Datenschutz (DSGVO, BDSG)  
+*Branchenspezifischer Hinweis (Bankwesen)*
+Achte auf regulatorische Anforderungen (BaFin/ECB), Risikomanagement, Datenschutz (DSGVO, BDSG)
 und Reporting-Fristen (z. B. Meldepflichten, Stresstests).""",
-
     "autowerkstatt": """
-*Branchenspezifischer Hinweis (Autowerkstatt)*  
-Markiere Ersatzteil-Bestellungen, Auslieferungstermine, Rückrufaktionen  
+*Branchenspezifischer Hinweis (Autowerkstatt)*
+Markiere Ersatzteil-Bestellungen, Auslieferungstermine, Rückrufaktionen
 und Garantie-Fragen als Aufgaben oder Fristen.""",
-
     "hr": """
-*Branchenspezifischer Hinweis (HR)*  
-Hebe Leistungsziele, Feedback-Punkte, Entwicklungsmaßnahmen  
+*Branchenspezifischer Hinweis (HR)*
+Hebe Leistungsziele, Feedback-Punkte, Entwicklungsmaßnahmen
 und vertrauliche Daten (z. B. Gehalt) klar hervor.""",
-
     "softwareentwicklung": """
-*Branchenspezifischer Hinweis (Softwareentwicklung)*  
-Erfasse User-Stories, technische Abhängigkeiten, Code-Reviews, Deployment-Termine  
+*Branchenspezifischer Hinweis (Softwareentwicklung)*
+Erfasse User-Stories, technische Abhängigkeiten, Code-Reviews, Deployment-Termine
 und Risiken wie technische Schulden oder Sicherheitslücken.""",
-
     "marketing": """
-*Branchenspezifischer Hinweis (Marketing)*  
-Kennzeichne Kampagnen-Termine, Budget-Entscheidungen, Zielgruppen-Analysen,  
+*Branchenspezifischer Hinweis (Marketing)*
+Kennzeichne Kampagnen-Termine, Budget-Entscheidungen, Zielgruppen-Analysen,
 Content-Deadlines und KPIs (z. B. CTR, Conversion-Rate).""",
-
     "vertrieb": """
-*Branchenspezifischer Hinweis (Vertrieb)*  
-Hebe Leads, Angebots-Fristen, Vertragsverhandlungen, Upsell-Chancen  
+*Branchenspezifischer Hinweis (Vertrieb)*
+Hebe Leads, Angebots-Fristen, Vertragsverhandlungen, Upsell-Chancen
 und Ziel-/Umsatzvorgaben hervor.""",
 }
