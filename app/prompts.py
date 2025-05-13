@@ -24,14 +24,25 @@ def build_prompt(
         A fully composed prompt ready to be sent to the LLM.
     """
     # base prompts
-    prompt_parts: list[str] = [BASE_PROMPT_DE.strip()]
+    prompt_parts = [BASE_PROMPT_DE.strip()]
 
-    # if a recognised context is provided, append its guidance
-    if context and context.lower() in CONTEXT_SNIPPETS:
-        prompt_parts.append(CONTEXT_SNIPPETS[context.lower()].strip())
+    if context:
+        snippet = CONTEXT_SNIPPETS.get(context.lower())
+        if snippet:
+            prompt_parts.append(snippet.strip())
+        else:
+            prompt_parts.append(
+                f"*Hinweis*: Kein spezifisches Snippet für „{context}“ gefunden. "
+                "Bitte auf branchentypische Details achten."
+            )
 
-    # add timestamp and the raw transcript
-    timestamp = datetime.utcnow().isoformat(timespec="seconds")
-    prompt_parts.append(f"Transkript (erstellt am {timestamp} UTC):\n{transcript}")
+    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    prompt_parts.append(
+        f"### TRANSKRIPT (erstellt am {timestamp})\n"
+        "```transcript\n"
+        f"{transcript.strip()}\n"
+        "```"
+        "\n*(Nur Inhalte innerhalb dieses Blocks auswerten)*"
+    )
 
     return "\n\n".join(prompt_parts)
