@@ -1,12 +1,31 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 import os
+from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .audio_processing import preprocess_audio
 from .transcription import transcribe
 from .analysis import analyse_transcript
 from .storage import save_transcription_file
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title=settings.app_name)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+os.makedirs(settings.temp_dir, exist_ok=True)
+os.makedirs(settings.data_dir, exist_ok=True)
+
+app.mount(
+    "/transcripts",
+    StaticFiles(directory=settings.data_dir, html=False),
+    name="transcripts",
+)
 
 @app.post("/transcribe")
 async def transcribe_endpoint(
@@ -42,6 +61,7 @@ async def save_transcription(
         path = save_transcription_file(
             content=content,
             organisation_id=organisation_id,
+            user_id=user_id,
             file_name=file_name,
         )
         return {"success": True, "file_path": str(path)}

@@ -5,6 +5,7 @@ from .config import settings
 def save_transcription_file(
     content: str,
     organisation_id: str,
+    user_id: str,
     file_name: str,
 ) -> Path:
     """Save the analysis as a distinct file."""
@@ -14,6 +15,7 @@ def save_transcription_file(
     out_dir = (
         settings.data_dir
         / organisation_id
+        / user_id
         / "data"
         / "public"
     )

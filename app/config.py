@@ -3,6 +3,8 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
+API_URL = "http://localhost:8000"
+
 # config classes
 class Settings(BaseSettings):
     
@@ -10,14 +12,14 @@ class Settings(BaseSettings):
     app_name: str = "Audio‑Transcribe"
 
     # paths
-    temp_dir: Path = BASE_DIR / ".." / ".." / "temp"
-    data_dir: Path = BASE_DIR / ".." / ".." / "spaces"
+    temp_dir: Path = BASE_DIR / "temp"
+    data_dir: Path = BASE_DIR / "spaces"
 
     # whisper
-    whisper_model_size: str = "medium"
+    whisper_model_size: str = "small"
 
     # ollama
-    ollama_model: str = "llama3.2"
+    ollama_model: str = "llama3.2:1b"
     ollama_base_url: str | None = None
     ollama_host: str | None = None
 
