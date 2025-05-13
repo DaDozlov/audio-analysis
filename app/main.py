@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 import os
+from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .audio_processing import preprocess_audio
 from .transcription import transcribe
@@ -7,6 +8,14 @@ from .analysis import analyse_transcript
 from .storage import save_transcription_file
 
 app = FastAPI(title=settings.app_name)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/transcribe")
 async def transcribe_endpoint(
