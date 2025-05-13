@@ -1,5 +1,3 @@
-
-
 def test_save_transcription_endpoint(client):
     resp = client.post(
         "/save_transcription",
