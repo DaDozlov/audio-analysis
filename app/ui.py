@@ -13,6 +13,11 @@ with st.form("transcribe_form"):
     organisation_id = st.text_input("Organisation ID")
     file_name_input = st.text_input("File name (without extension, optional)")
     submitted = st.form_submit_button("Transcribe and Analyze")
+    model_size = st.selectbox(
+        "Whisper model size",
+        options=["tiny", "base", "small", "medium", "large"],
+        index=["tiny", "base", "small", "medium", "large"].index("small"),
+    )
 
 if submitted:
     if not uploaded_file:
@@ -30,6 +35,7 @@ if submitted:
                     "user_id": user_id,
                     "organisation_id": organisation_id,
                     "file_name": file_name_input,
+                    "model_size": model_size,
                 }
                 resp = requests.post(f"{API_URL}/transcribe", files=files, data=data)
                 resp.raise_for_status()

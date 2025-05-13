@@ -35,13 +35,16 @@ async def transcribe_endpoint(
     user_id: str = Form(...),
     organisation_id: str = Form(...),
     file_name: str | None = Form(None),
+    model_size: str | None = Form(None),
 ):
     try:
         file_bytes = await file.read()
         audio_path = preprocess_audio(
             file_bytes, filename_ext=file.filename.split(".")[-1]
         )
-        transcript_text = transcribe(audio_path)
+        transcript_text = transcribe(
+            audio_path, model_size or settings.whisper_model_size
+        )
         analysis_text = await analyse_transcript(transcript_text, industry)
 
         return {"transcription": transcript_text, "analysis": analysis_text}
