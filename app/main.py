@@ -34,7 +34,7 @@ async def transcribe_endpoint(
     industry: str | None = Form(None),
     user_id: str = Form(...),
     organisation_id: str = Form(...),
-    file_name: str = Form(...),
+    file_name: str | None = Form(None),
 ):
     try:
         file_bytes = await file.read()
