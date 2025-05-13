@@ -4,21 +4,26 @@ from datetime import datetime
 
 API_URL = "http://localhost:8000"
 
-st.title("Audio Transcription and Analysis")
+st.header("Audio Transcription and Analysis", divider="orange")
 
 with st.form("transcribe_form"):
     uploaded_file = st.file_uploader("Upload MP3/WAV file", type=["mp3", "wav"])
     industry = st.text_input("Industry (optional)")
     user_id = st.text_input("User ID")
     organisation_id = st.text_input("Organisation ID")
-    file_name_input = st.text_input("File name (without extension)")
+    file_name_input = st.text_input("File name (without extension, optional)")
+    model_size = st.selectbox(
+        "Whisper model size",
+        options=["tiny", "base", "small", "medium", "large"],
+        index=["tiny", "base", "small", "medium", "large"].index("small"),
+    )
     submitted = st.form_submit_button("Transcribe and Analyze")
 
 if submitted:
     if not uploaded_file:
         st.error("Please upload an MP3 file.")
-    elif not user_id or not organisation_id or not file_name_input:
-        st.error("Please fill in User ID, Organisation ID, and File Name.")
+    elif not user_id or not organisation_id:
+        st.error("Please fill in User ID, Organisation ID.")
     else:
         with st.spinner("Transcribing..."):
             try:
@@ -30,6 +35,7 @@ if submitted:
                     "user_id": user_id,
                     "organisation_id": organisation_id,
                     "file_name": file_name_input,
+                    "model_size": model_size,
                 }
                 resp = requests.post(f"{API_URL}/transcribe", files=files, data=data)
                 resp.raise_for_status()
