@@ -4,7 +4,7 @@ from datetime import datetime
 
 API_URL = "http://localhost:8000"
 
-st.title("Audio Transcription and Analysis")
+st.header("Audio Transcription and Analysis", divider="orange")
 
 with st.form("transcribe_form"):
     uploaded_file = st.file_uploader("Upload MP3/WAV file", type=["mp3", "wav"])
@@ -12,12 +12,12 @@ with st.form("transcribe_form"):
     user_id = st.text_input("User ID")
     organisation_id = st.text_input("Organisation ID")
     file_name_input = st.text_input("File name (without extension, optional)")
-    submitted = st.form_submit_button("Transcribe and Analyze")
     model_size = st.selectbox(
         "Whisper model size",
         options=["tiny", "base", "small", "medium", "large"],
         index=["tiny", "base", "small", "medium", "large"].index("small"),
     )
+    submitted = st.form_submit_button("Transcribe and Analyze")
 
 if submitted:
     if not uploaded_file:
