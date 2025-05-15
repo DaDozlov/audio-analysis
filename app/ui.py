@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 from datetime import datetime
+from variables import CONTEXT_SNIPPETS
 
 API_URL = "http://localhost:8000"
 
@@ -8,7 +9,8 @@ st.header("Audio Transcription and Analysis", divider="orange")
 
 with st.form("transcribe_form"):
     uploaded_file = st.file_uploader("Upload MP3/WAV file", type=["mp3", "wav"])
-    industry = st.text_input("Industry (optional)")
+    industry_options = [""] + list(CONTEXT_SNIPPETS.keys())
+    industry = st.selectbox("Industry (optional)", options=industry_options, index=0)
     user_id = st.text_input("User ID")
     organisation_id = st.text_input("Organisation ID")
     file_name_input = st.text_input("File name (without extension, optional)")
