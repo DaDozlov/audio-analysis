@@ -19,6 +19,12 @@ with st.form("transcribe_form"):
         options=["tiny", "base", "small", "medium", "large"],
         index=["tiny", "base", "small", "medium", "large"].index("small"),
     )
+    custom_prompt = st.text_area(
+        "Custom Prompt (optional)",
+        value="",
+        height=200,
+        help="Override the default analysis prompt from the backend.",
+    )
     submitted = st.form_submit_button("Transcribe and Analyze")
 
 if submitted:
@@ -38,6 +44,7 @@ if submitted:
                     "organisation_id": organisation_id,
                     "file_name": file_name_input,
                     "model_size": model_size,
+                    "custom_prompt": custom_prompt or None,
                 }
                 resp = requests.post(f"{API_URL}/transcribe", files=files, data=data)
                 resp.raise_for_status()
@@ -66,6 +73,18 @@ if st.session_state.get("ready"):
     st.text_area("", st.session_state.transcription, height=200)
     st.subheader("Analysis")
     st.text_area("", st.session_state.analysis, height=200)
+
+    if st.button("Generate Action Suggestion", key="intent_btn"):
+        with st.spinner("Browsing web…"):
+            try:
+                payload = {"transcript": st.session_state.transcription}
+                intent_resp = requests.post(f"{API_URL}/intent", data=payload)
+                intent_resp.raise_for_status()
+                suggestion = intent_resp.json().get("intent", "")
+                st.subheader("Suggested actions")
+                st.markdown(suggestion)
+            except Exception as e:
+                st.error(f"Error calling intent endpoint: {e}")
 
     # download button
     st.download_button(
