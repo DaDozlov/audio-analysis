@@ -7,6 +7,10 @@ from .transcription import transcribe
 from .analysis import analyse_transcript
 from .storage import save_transcription_file
 from fastapi.staticfiles import StaticFiles
+from .variables import BASE_PROMPT_DE
+from .intent import analyze_intent
+from .clients import call_openai
+
 
 app = FastAPI(title=settings.app_name)
 
@@ -28,6 +32,11 @@ app.mount(
 )
 
 
+@app.get("/prompt")
+def get_prompt():
+    return {"prompt": BASE_PROMPT_DE}
+
+
 @app.post("/transcribe")
 async def transcribe_endpoint(
     file: UploadFile = File(...),
@@ -36,6 +45,7 @@ async def transcribe_endpoint(
     organisation_id: str = Form(...),
     file_name: str | None = Form(None),
     model_size: str | None = Form(None),
+    custom_prompt: str | None = Form(None),
 ):
     try:
         file_bytes = await file.read()
@@ -45,7 +55,9 @@ async def transcribe_endpoint(
         transcript_text = transcribe(
             audio_path, model_size or settings.whisper_model_size
         )
-        analysis_text = await analyse_transcript(transcript_text, industry)
+        analysis_text = await analyse_transcript(
+            transcript_text, industry, prompt_override=custom_prompt
+        )
 
         return {"transcription": transcript_text, "analysis": analysis_text}
     except Exception as e:
@@ -77,3 +89,11 @@ async def save_transcription(
             status_code=500,
             detail=f"Failed to save transcription: {e}",
         )
+
+
+@app.post("/intent")
+async def intent_endpoint(
+    transcript: str = Form(...),
+):
+    prefixed = await analyze_intent(call_openai, transcript)
+    return {"intent": prefixed}
