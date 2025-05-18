@@ -9,7 +9,6 @@ from .storage import save_transcription_file
 from fastapi.staticfiles import StaticFiles
 from .variables import BASE_PROMPT_DE
 from .intent import analyze_intent
-from .clients import call_openai
 
 
 app = FastAPI(title=settings.app_name)
@@ -92,8 +91,6 @@ async def save_transcription(
 
 
 @app.post("/intent")
-async def intent_endpoint(
-    transcript: str = Form(...),
-):
-    prefixed = await analyze_intent(call_openai, transcript)
+async def intent_endpoint(transcript: str = Form(...)):
+    prefixed = await analyze_intent(transcript)
     return {"intent": prefixed}

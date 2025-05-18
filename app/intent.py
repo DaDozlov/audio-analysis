@@ -1,10 +1,12 @@
 import asyncio
 import logging
 
+from app.clients import call_groq, call_openai
+
 logger = logging.getLogger(__name__)
 
 
-async def analyze_intent(llm, email_body: str) -> str:
+async def analyze_intent(email_body: str) -> str:
     logger.debug("Analyzing user intent")
 
     prompt = f"""
@@ -57,7 +59,33 @@ Special cases:
 REMEMBER: Return ONLY the prefix (if applicable) and query. NO explanations or additional text.
 """
 
-    # Run the llm.invoke call in a thread so we stay async
-    response = await asyncio.to_thread(llm.invoke, prompt, True, category="chat")
-    logger.debug(f"Detected intent: {response}")
-    return response.strip()
+    messages = [{"role": "user", "content": prompt}]
+
+    # try OpenAI first
+    try:
+        response = await asyncio.to_thread(
+            call_openai,
+            messages,
+            max_tokens=256,
+            temperature=0.2
+        )
+        result = response["choices"][0]["message"]["content"]
+        logger.debug("Used OpenAI for intent detection")
+        return result.strip()
+    except Exception as e:
+        logger.warning(f"OpenAI failed, falling back to Groq: {e}")
+
+    # fallback to Groq
+    try:
+        response = await asyncio.to_thread(
+            call_groq,
+            messages,
+            max_tokens=256,
+            temperature=0.2
+        )
+        result = response.choices[0].message.content
+        logger.debug("Used Groq for intent detection")
+        return result.strip()
+    except Exception as e:
+        logger.error(f"Groq also failed: {e}")
+        raise RuntimeError("Both OpenAI and Groq failed to process the intent.")

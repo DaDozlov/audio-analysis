@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     groq_api_key: str | None = None
 
+    groq_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
+
     class Config:
         env_file = BASE_DIR / ".env"
         env_file_encoding = "utf-8"

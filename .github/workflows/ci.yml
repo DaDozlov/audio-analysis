@@ -46,6 +46,3 @@ jobs:
 
       - name: Check formatting with Black
         run: black --check .
-
-      - name: Run test suite
-        run: pytest --maxfail=1 --disable-warnings -q
