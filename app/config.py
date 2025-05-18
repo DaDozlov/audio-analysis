@@ -24,8 +24,14 @@ class Settings(BaseSettings):
     ollama_base_url: str | None = None
     ollama_host: str | None = None
 
+    # openai and groq keys
+    openai_api_key: str | None = None
+    groq_api_key: str | None = None
+
+    groq_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
+
     class Config:
-        env_file = "../.env"
+        env_file = BASE_DIR / ".env"
         env_file_encoding = "utf-8"
 
 
