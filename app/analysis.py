@@ -1,11 +1,7 @@
 from ollama import AsyncClient
 from .prompts import build_prompt
 from .config import settings
-from .clients import call_openai, call_groq
 import httpx
-from .config import settings
-from .prompts import build_prompt
-
 
 async def call_openai_async(prompt: str, **kwargs) -> dict:
     headers = {"Authorization": f"Bearer {settings.openai_api_key}"}
