@@ -22,11 +22,19 @@ class Settings(BaseSettings):
     # ollama
     ollama_model: str = "llama3.2:1b"
     ollama_base_url: str | None = None
-    ollama_host: str | None = None
+    ollama_host: str = "http://127.0.0.1:11434"
 
-    # openai and groq keys
+    # openai
     openai_api_key: str | None = None
+    openai_model: str = "gpt-3.5-turbo"
+    openai_temperature: float = 0.2
+    openai_max_tokens: int = 1024
+
+    # groq
     groq_api_key: str | None = None
+    groq_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
+    groq_temperature: float = 0.2
+    groq_max_tokens: int = 1024
 
     groq_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
 

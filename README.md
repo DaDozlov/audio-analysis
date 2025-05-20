@@ -37,6 +37,12 @@ curl -fsSL https://ollama.com/install.sh | sh
 sudo apt-get update && sudo apt-get install ffmpeg
 ```
 
+6. Add .env file to your project with the following properties:
+```bash
+GROQ_API_KEY=""
+OPENAI_API_KEY=""
+```
+
 ## Configuration
 
 The app is running by default with Whisper small model and ollama llama3.2:1b (with 1b params). You can directly change your Whisper model using the UI (the last field). If you want to adapt your ollama model, simply change the model in the **config.py** file and run **ollama pull your_model** instead of the default one.

@@ -19,6 +19,13 @@ with st.form("transcribe_form"):
         options=["tiny", "base", "small", "medium", "large"],
         index=["tiny", "base", "small", "medium", "large"].index("small"),
     )
+    provider_options = ["openai", "groq", "ollama"]
+    provider = st.selectbox(
+        "Model provider",
+        options=provider_options,
+        index=provider_options.index("openai"),
+        help="Which AI backend to try first",
+    )
     custom_prompt = st.text_area(
         "Custom Prompt (optional)",
         value="",
@@ -45,6 +52,7 @@ if submitted:
                     "file_name": file_name_input,
                     "model_size": model_size,
                     "custom_prompt": custom_prompt or None,
+                    "provider": provider,
                 }
                 resp = requests.post(f"{API_URL}/transcribe", files=files, data=data)
                 resp.raise_for_status()
