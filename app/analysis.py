@@ -3,6 +3,7 @@ from .prompts import build_prompt
 from .config import settings
 import httpx
 
+
 async def call_openai_async(prompt: str, **kwargs) -> dict:
     headers = {"Authorization": f"Bearer {settings.openai_api_key}"}
     payload = {
@@ -43,7 +44,7 @@ async def call_groq_async(prompt: str, **kwargs) -> dict:
 async def analyse_transcript(
     transcript: str, industry: str | None, prompt_override: str | None = None
 ) -> str:
-    
+
     prompt = prompt_override or build_prompt(transcript, industry)
 
     # OpenAI
@@ -62,12 +63,12 @@ async def analyse_transcript(
         except Exception as e:
             print(f"Groq API failed: {e}")
 
-    # Ollama
+        # Ollama
         try:
             client = AsyncClient(host=settings.ollama_host)
             resp = await client.chat(
                 model=settings.ollama_model,
-                messages=[{"role": "user", "content": prompt}]
+                messages=[{"role": "user", "content": prompt}],
             )
             return resp["message"]["content"].strip()
         except Exception as e:

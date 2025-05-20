@@ -64,10 +64,7 @@ REMEMBER: Return ONLY the prefix (if applicable) and query. NO explanations or a
     # try OpenAI first
     try:
         response = await asyncio.to_thread(
-            call_openai,
-            messages,
-            max_tokens=256,
-            temperature=0.2
+            call_openai, messages, max_tokens=256, temperature=0.2
         )
         result = response["choices"][0]["message"]["content"]
         logger.debug("Used OpenAI for intent detection")
@@ -78,10 +75,7 @@ REMEMBER: Return ONLY the prefix (if applicable) and query. NO explanations or a
     # fallback to Groq
     try:
         response = await asyncio.to_thread(
-            call_groq,
-            messages,
-            max_tokens=256,
-            temperature=0.2
+            call_groq, messages, max_tokens=256, temperature=0.2
         )
         result = response.choices[0].message.content
         logger.debug("Used Groq for intent detection")
