@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     # ollama
     ollama_model: str = "llama3.2:1b"
     ollama_base_url: str | None = None
-    ollama_host: str | None = None
+    ollama_host: str = "http://127.0.0.1:11434"
 
     # openai
     openai_api_key: str | None = None

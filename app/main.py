@@ -45,6 +45,7 @@ async def transcribe_endpoint(
     file_name: str | None = Form(None),
     model_size: str | None = Form(None),
     custom_prompt: str | None = Form(None),
+    provider: str = Form(""),
 ):
     try:
         file_bytes = await file.read()
@@ -55,7 +56,7 @@ async def transcribe_endpoint(
             audio_path, model_size or settings.whisper_model_size
         )
         analysis_text = await analyse_transcript(
-            transcript_text, industry, prompt_override=custom_prompt
+            transcript_text, industry, prompt_override=custom_prompt, provider=provider
         )
 
         return {"transcription": transcript_text, "analysis": analysis_text}
